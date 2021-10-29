@@ -1,0 +1,94 @@
+#!/usr/bin/env php
+<?php
+
+require_once dirname(__FILE__) . '/../../../autoload.php';
+
+use Nixihz\PhpObject\PhpObjectGenerator;
+
+$paramKey = [
+    "p" => "path",
+    "b" => "baseClassName",
+    "f" => "fieldCase",
+    "n" => "namespace",
+    "j" => "json",
+    "h" => "help",
+];
+
+$paramHelp = [
+    "path" => "\tpath to save class files",
+    "baseClassName" => "base class name",
+    "fieldCase" => "field case type 0:keep, 1:snake case, 2:camel case",
+    "namespace" => "namespace for class",
+    "json" => "\tjson input",
+    "help" => "\tprint this help",
+];
+
+$params = [
+    "path" => "",
+    "baseClassName" => "",
+    "fieldCase" => "",
+    "namespace" => "",
+    "json" => "",
+];
+
+foreach ($argv as $item) {
+    $argvName = ltrim($item, "-");
+    $slashCount = strlen($item) - strlen($argvName);
+    // todo add support: short dash params
+    if ($slashCount == 2) {
+        $kv = getLongParams($argvName);
+        $params = array_merge($params, $kv);
+    }
+}
+
+validate($params);
+
+
+$generator = new PhpObjectGenerator();
+$generator->fieldCase = $params["fieldCase"] ?: 0;
+$generator->namespace = $params["namespace"] ?: "";
+$generator->baseClassName = $params["baseClassName"] ?: "BaseClass";
+$generator->path = $params["path"] ?: ".";
+
+$generator->parseJson($params["json"]);
+$generator->save();
+exit;
+
+
+function validate($params)
+{
+    if (!$params["json"]) {
+        echo "--json param is needed" . PHP_EOL;
+        echo "./vendor/bin/php-object-gen --help for more" . PHP_EOL;
+        exit;
+    }
+}
+
+function getLongParams($argvName)
+{
+    global $paramKey;
+    $kv = explode("=", $argvName, 2);
+    if ($kv[0] == "help") {
+        printHelp();
+    }
+    if (count($kv) <= 1) {
+        return [];
+    }
+    if (in_array($kv[0], $paramKey)) {
+        return [trim($kv[0]) => trim($kv[1])];
+    }
+    return [];
+}
+
+function printHelp()
+{
+    echo "php object generator by nixihz\n\n";
+    echo "Usage:\n";
+    echo "\t./vendor/bin/php-object-gen --path=/tmp --json='{\"foo_bar\":{\"foo\":1.3,\"bar\":[641,641]}}'\n\n";
+    echo "Flags:\n";
+    global $paramHelp;
+    foreach ($paramHelp as $index => $item) {
+        echo "--" . $index . "\t" . $item . PHP_EOL;
+    }
+    exit;
+}
