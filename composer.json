@@ -11,6 +11,7 @@
     ],
     "require": {
         "php": ">=7.0",
+        "nette/php-generator": "^3.6",
         "ext-json": "*"
     },
     "autoload": {
@@ -19,6 +20,7 @@
         ]
     },
     "bin": [
+        "bin/php-object-gen"
     ],
     "autoload-dev": {
         "classmap": [
