@@ -1,0 +1,31 @@
+{
+    "name": "nixihz/php-object",
+    "description": "",
+    "homepage": "https://github.com/nixihz/php-object/",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Zhixin",
+            "email": "yagoodidea@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0",
+        "ext-json": "*"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "bin": [
+    ],
+    "autoload-dev": {
+        "classmap": [
+            "tests/_fixture/"
+        ]
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.5"
+    }
+}
